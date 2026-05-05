@@ -23,7 +23,7 @@ TEMPLATE = """
     a:hover { text-decoration: underline; }
 
     /* Layout */
-    .sidebar { width: 280px; min-height: 100vh; background: #1a1a1a; border-right: 1px solid #2a2a2a;
+    .sidebar { width: 280px; height: 100vh; background: #1a1a1a; border-right: 1px solid #2a2a2a;
                padding: 1.5rem 1rem; position: fixed; top: 0; left: 0; overflow-y: auto; }
     .main { margin-left: 280px; padding: 2rem; }
 
