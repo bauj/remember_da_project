@@ -1,0 +1,21 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "remember-da-project"
+version = "0.1.0"
+description = "SQLite-backed MCP server for persistent vibe coding memory across sessions"
+requires-python = ">=3.10"
+dependencies = [
+    "fastmcp>=2.0",
+    "flask>=3.0",
+]
+
+[project.scripts]
+remember-da-server = "remember_da_project.server:main"
+remember-da-hook   = "remember_da_project.hook:main"
+remember-da-web    = "remember_da_project.web:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/remember_da_project"]
