@@ -100,6 +100,16 @@ def get_project(project_path: str) -> Optional[dict]:
 
 
 @mcp.tool()
+def list_projects() -> list[dict]:
+    """
+    List all registered projects with stats: task_count, active_task_count,
+    map_entry_count, note_count, command_count. Use to discover known projects
+    before calling get_session_context on a specific one.
+    """
+    return db.list_projects()
+
+
+@mcp.tool()
 def remove_project(project_path: str) -> bool:
     """Delete a project and ALL its data (tasks, map entries, commands, notes). Requires exact path."""
     return db.remove_project(project_path)

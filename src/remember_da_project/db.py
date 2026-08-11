@@ -128,6 +128,22 @@ def get_project(path: str) -> Optional[dict]:
         return dict(row) if row else None
 
 
+def list_projects() -> list[dict]:
+    with get_connection() as conn:
+        rows = conn.execute(
+            """SELECT p.*,
+                      (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id) AS task_count,
+                      (SELECT COUNT(*) FROM tasks t WHERE t.project_id = p.id
+                         AND t.status IN ('new', 'in_progress', 'blocked')) AS active_task_count,
+                      (SELECT COUNT(*) FROM map_entries m WHERE m.project_id = p.id) AS map_entry_count,
+                      (SELECT COUNT(*) FROM notes n WHERE n.project_id = p.id) AS note_count,
+                      (SELECT COUNT(*) FROM commands c WHERE c.project_id = p.id) AS command_count
+               FROM projects p
+               ORDER BY p.name""",
+        ).fetchall()
+        return [dict(row) for row in rows]
+
+
 def remove_project(path: str) -> bool:
     with get_connection() as conn:
         cursor = conn.execute(

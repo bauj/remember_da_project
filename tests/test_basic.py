@@ -181,6 +181,37 @@ def test_cascade_delete():
     assert db_module.list_notes(PROJECT_PATH) == []
 
 
+def test_list_projects_empty():
+    assert db_module.list_projects() == []
+
+
+def test_list_projects_stats_and_order():
+    db_module.init_project("/tmp/proj_b", "B Project")
+    db_module.init_project("/tmp/proj_a", "A Project")
+
+    db_module.add_task("/tmp/proj_a", "Task 1")
+    done = db_module.add_task("/tmp/proj_a", "Task 2")
+    db_module.update_task(done["id"], status="done")
+    db_module.upsert_map_entry("/tmp/proj_a", "main.py", "Entry point")
+    db_module.set_note("/tmp/proj_a", "orm", "SQLAlchemy 2.x")
+    db_module.set_command("/tmp/proj_a", "run", "python main.py")
+
+    projects = db_module.list_projects()
+    assert [p["name"] for p in projects] == ["A Project", "B Project"]
+
+    proj_a = projects[0]
+    assert proj_a["task_count"] == 2
+    assert proj_a["active_task_count"] == 1
+    assert proj_a["map_entry_count"] == 1
+    assert proj_a["note_count"] == 1
+    assert proj_a["command_count"] == 1
+
+    proj_b = projects[1]
+    assert proj_b["task_count"] == 0
+    assert proj_b["active_task_count"] == 0
+    assert proj_b["map_entry_count"] == 0
+
+
 def test_get_session_context():
     ctx = db_module.get_session_context(PROJECT_PATH)
     assert "project" in ctx
